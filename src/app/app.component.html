@@ -1,0 +1,38 @@
+﻿<button mat-raised-button (click)="addColumn()"> Add column </button>
+<button mat-raised-button (click)="removeColumn()"> Remove column </button>
+<table mat-table [dataSource]="dataSource" class="mat-elevation-z8" cdkDropListGroup>
+  <ng-container *ngFor="let column of columns; let i = index" [matColumnDef]="column.field">
+    <mat-header-cell *matHeaderCellDef
+      class="header-cell"
+      cdkDropList
+      cdkDropListLockAxis="x"
+      cdkDropListOrientation="horizontal"
+      (cdkDropListDropped)="dropListDropped($event, i)"
+      cdkDrag
+      (cdkDragStarted)="dragStarted($event, i)"
+      [cdkDragData]="{name: column.field, columIndex: i}" >
+      {{ column.field }}
+    </mat-header-cell>
+    
+    <mat-cell  *matCellDef="let row" > 
+      <ng-container *ngIf="column.field ==='source'"><a [href]="row[column.field]">source</a></ng-container>
+      <ng-container *ngIf="column.field == 'inputType'" [ngSwitch] = "row[column.field]">
+          <ng-container *ngSwitchCase="'input'">
+            <input matInput placeholder="Enter here"  class='table-input'>
+          </ng-container>
+          <ng-container *ngSwitchCase="'textArea'">
+              <textarea matInput placeholder="Enter here"  class='table-input'></textarea>
+          </ng-container>
+          <ng-container *ngSwitchCase="'radio'">
+              <mat-radio-button class='table-input'></mat-radio-button>
+          </ng-container>
+          <ng-container *ngSwitchCase="'checkbox'">
+              <mat-checkbox class='table-input'></mat-checkbox>
+          </ng-container>
+      </ng-container>
+      <ng-container *ngIf="column.field !== 'source' && column.field !== 'inputType'">{{ row[column.field] }}</ng-container>
+    </mat-cell>
+  </ng-container>
+  <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+  <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+</table>
